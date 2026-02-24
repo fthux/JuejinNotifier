@@ -12,11 +12,16 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.type === 'SYNC_UUID') {
-        chrome.storage.local.get(['uuid'], (result) => {
+        chrome.storage.local.get(['uuid', 'loggedOutUuid'], (result) => {
+            if (result.loggedOutUuid && result.loggedOutUuid === message.uuid) {
+                return;
+            }
             if (result.uuid !== message.uuid) {
-                chrome.storage.local.set({ uuid: message.uuid }, () => {
-                    // Immediately check messages when UUID updates
-                    checkMessages();
+                chrome.storage.local.remove(['loggedOutUuid'], () => {
+                    chrome.storage.local.set({ uuid: message.uuid }, () => {
+                        // Immediately check messages when UUID updates
+                        checkMessages();
+                    });
                 });
             }
 
@@ -28,13 +33,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             });
         });
     } else if (message.type === 'CLEAR_UUID') {
-        chrome.storage.local.remove('uuid');
+        chrome.storage.local.remove(['uuid', 'lastMessageCount']);
         chrome.action.setBadgeText({ text: '' });
     } else if (message.type === 'MANUAL_REFRESH') {
         checkMessages().then(count => {
             sendResponse({ count: count });
         });
         return true; // Keep message channel open for async response
+    } else if (message.type === 'LOGOUT') {
+        chrome.storage.local.get(['uuid'], (result) => {
+            if (result.uuid) {
+                chrome.storage.local.set({ loggedOutUuid: result.uuid }, () => {
+                    chrome.storage.local.remove(['uuid', 'lastMessageCount'], () => {
+                        chrome.action.setBadgeText({ text: '' });
+                        sendResponse({ success: true });
+                    });
+                });
+            } else {
+                sendResponse({ success: true });
+            }
+        });
+        return true;
+    } else if (message.type === 'INTENT_LOGIN') {
+        chrome.storage.local.remove(['loggedOutUuid']);
     }
 });
 

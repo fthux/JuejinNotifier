@@ -31,7 +31,21 @@
       <button id="view-msg-btn" class="primary-btn">查看消息</button>
       <button id="refresh-btn" class="secondary-btn">刷新</button>
     </div>
-    <div class="footer-note">自动刷新间隔：5 分钟</div>
+    <div class="footer-wrap">
+      <div class="footer-note">自动刷新间隔：5 分钟</div>
+      <button id="logout-btn" class="text-btn">退出账号</button>
+    </div>
+  </div>
+
+  <div id="confirm-modal" class="modal hidden">
+    <div class="modal-content">
+      <div class="modal-title" style="font-weight: 600; margin-bottom: 12px;">提示</div>
+      <div class="modal-desc">确定要退出当前账号吗？</div>
+      <div class="modal-actions">
+        <button id="modal-cancel-btn" class="secondary-btn">取消</button>
+        <button id="modal-confirm-btn" class="danger-btn">确定退出</button>
+      </div>
+    </div>
   </div>
 
   <script src="popup.js"></script>

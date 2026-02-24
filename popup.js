@@ -6,6 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginBtn = document.getElementById('login-btn');
     const viewMsgBtn = document.getElementById('view-msg-btn');
     const refreshBtn = document.getElementById('refresh-btn');
+    const logoutBtn = document.getElementById('logout-btn');
+    const confirmModal = document.getElementById('confirm-modal');
+    const modalCancelBtn = document.getElementById('modal-cancel-btn');
+    const modalConfirmBtn = document.getElementById('modal-confirm-btn');
     const msgCountEl = document.getElementById('msg-count');
 
     function updateDisplay(count) {
@@ -41,11 +45,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     loginBtn.addEventListener('click', () => {
+        chrome.runtime.sendMessage({ type: 'INTENT_LOGIN' });
         chrome.tabs.create({ url: 'https://juejin.cn/' });
     });
 
     viewMsgBtn.addEventListener('click', () => {
         chrome.tabs.create({ url: 'https://juejin.cn/notification/system' });
+    });
+
+    logoutBtn.addEventListener('click', () => {
+        confirmModal.classList.remove('hidden');
+    });
+
+    modalCancelBtn.addEventListener('click', () => {
+        confirmModal.classList.add('hidden');
+    });
+
+    modalConfirmBtn.addEventListener('click', () => {
+        modalConfirmBtn.textContent = '退出中...';
+        modalConfirmBtn.disabled = true;
+        chrome.runtime.sendMessage({ type: 'LOGOUT' }, (response) => {
+            confirmModal.classList.add('hidden');
+            modalConfirmBtn.textContent = '确定退出';
+            modalConfirmBtn.disabled = false;
+            showState('login');
+        });
     });
 
     refreshBtn.addEventListener('click', () => {
