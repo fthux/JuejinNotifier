@@ -21,6 +21,6 @@
     // Check immediately
     checkLoginState();
 
-    // Poll locally every 10 seconds to detect login without page reload
-    setInterval(checkLoginState, 10000);
+    // Poll locally every 1.5 seconds to detect login without page reload
+    setInterval(checkLoginState, 1500);
 })();

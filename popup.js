@@ -44,9 +44,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Listen for changes so popup updates instantly when user logs in/out
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'local') {
+            if (changes.uuid) {
+                if (changes.uuid.newValue) {
+                    showState('status');
+                    chrome.storage.local.get(['lastMessageCount'], (res) => {
+                        updateDisplay(res.lastMessageCount || 0);
+                    });
+                } else {
+                    showState('login');
+                }
+            }
+            if (changes.lastMessageCount) {
+                updateDisplay(changes.lastMessageCount.newValue || 0);
+            }
+        }
+    });
+
     loginBtn.addEventListener('click', () => {
         chrome.runtime.sendMessage({ type: 'INTENT_LOGIN' });
-        chrome.tabs.create({ url: 'https://juejin.cn/' });
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const currentTab = tabs[0];
+            if (currentTab && currentTab.url && (currentTab.url.includes('juejin.cn') || currentTab.url.includes('juejin.im'))) {
+                // 如果当前已经是掘金页面，则不打开新标签页，直接关闭弹窗即可
+                window.close();
+            } else {
+                chrome.tabs.create({ url: 'https://juejin.cn/' });
+            }
+        });
     });
 
     viewMsgBtn.addEventListener('click', () => {
