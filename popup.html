@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="popup.css">
+</head>
+
+<body>
+  <div class="container" id="loading-state">
+    <div class="spinner"></div>
+    <div class="message">加载中...</div>
+  </div>
+
+  <div class="container hidden" id="login-state">
+    <div class="icon-wrap">
+      <img src="icon180.png" alt="Juejin" class="logo">
+    </div>
+    <div class="message">您尚未登录掘金，或本地无登录信息。</div>
+    <button id="login-btn" class="primary-btn">前往登录</button>
+  </div>
+
+  <div class="container hidden" id="status-state">
+    <div class="icon-wrap">
+      <img src="icon180.png" alt="Juejin" class="logo">
+    </div>
+    <div class="message">
+      掘金系统通知：<span id="msg-count" class="highlight">0</span> 条
+    </div>
+    <div class="action-wrap">
+      <button id="view-msg-btn" class="primary-btn">查看消息</button>
+      <button id="refresh-btn" class="secondary-btn">刷新</button>
+    </div>
+    <div class="footer-note">自动刷新间隔：5 分钟</div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
