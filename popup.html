@@ -15,6 +15,7 @@
   <div class="container hidden" id="login-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
+      <div class="app-name">Juejin Notifier</div>
     </div>
     <div class="message">您尚未登录掘金，或本地无登录信息。</div>
     <button id="login-btn" class="primary-btn">前往登录</button>
@@ -23,16 +24,30 @@
   <div class="container hidden" id="status-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
+      <div class="app-name">Juejin Notifier</div>
     </div>
-    <div class="message">
-      掘金系统通知：<span id="msg-count" class="highlight">0</span> 条
+    <div class="message-list">
+      <div class="msg-item">赞和收藏：<span id="msg-1" class="highlight">0</span></div>
+      <div class="msg-item">评论：<span id="msg-3" class="highlight">0</span></div>
+      <div class="msg-item">新增粉丝：<span id="msg-2" class="highlight">0</span></div>
+      <div class="msg-item">私信：<span id="msg-7" class="highlight">0</span></div>
+      <div class="msg-item">系统通知：<span id="msg-4" class="highlight">0</span></div>
     </div>
     <div class="action-wrap">
       <button id="view-msg-btn" class="primary-btn">查看消息</button>
       <button id="refresh-btn" class="secondary-btn">刷新</button>
     </div>
     <div class="footer-wrap">
-      <div class="footer-note">自动刷新间隔：5 分钟</div>
+      <div class="footer-note">
+        <label for="refresh-interval">自动刷新间隔：</label>
+        <select id="refresh-interval" class="interval-select">
+          <option value="1">1 分钟</option>
+          <option value="3">3 分钟</option>
+          <option value="5">5 分钟</option>
+          <option value="30">半小时</option>
+          <option value="60">一小时</option>
+        </select>
+      </div>
       <button id="logout-btn" class="text-btn">退出账号</button>
     </div>
   </div>
@@ -46,6 +61,10 @@
         <button id="modal-confirm-btn" class="danger-btn">确定退出</button>
       </div>
     </div>
+  </div>
+
+  <div class="global-footer">
+    由 <a href="#" id="sponsor-link" class="sponsor-link">fthux.com</a> 友情赞助
   </div>
 
   <script src="popup.js"></script>

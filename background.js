@@ -1,5 +1,8 @@
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.alarms.create('checkJuejinMessages', { periodInMinutes: 5 });
+    chrome.storage.local.get(['refreshInterval'], (result) => {
+        const interval = result.refreshInterval || 5;
+        chrome.alarms.create('checkJuejinMessages', { periodInMinutes: interval });
+    });
     // Initial check on install
     checkMessages();
 });
@@ -28,12 +31,15 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             // Ensure alarm is active
             chrome.alarms.get('checkJuejinMessages', (alarm) => {
                 if (!alarm) {
-                    chrome.alarms.create('checkJuejinMessages', { periodInMinutes: 5 });
+                    chrome.storage.local.get(['refreshInterval'], (result) => {
+                        const interval = result.refreshInterval || 5;
+                        chrome.alarms.create('checkJuejinMessages', { periodInMinutes: interval });
+                    });
                 }
             });
         });
     } else if (message.type === 'CLEAR_UUID') {
-        chrome.storage.local.remove(['uuid', 'lastMessageCount']);
+        chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
         chrome.action.setBadgeText({ text: '' });
     } else if (message.type === 'MANUAL_REFRESH') {
         checkMessages().then(count => {
@@ -44,7 +50,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         chrome.storage.local.get(['uuid'], (result) => {
             if (result.uuid) {
                 chrome.storage.local.set({ loggedOutUuid: result.uuid }, () => {
-                    chrome.storage.local.remove(['uuid', 'lastMessageCount'], () => {
+                    chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts'], () => {
                         chrome.action.setBadgeText({ text: '' });
                         sendResponse({ success: true });
                     });
@@ -56,6 +62,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return true;
     } else if (message.type === 'INTENT_LOGIN') {
         chrome.storage.local.remove(['loggedOutUuid']);
+    } else if (message.type === 'UPDATE_ALARM') {
+        const interval = message.interval || 5;
+        chrome.alarms.create('checkJuejinMessages', { periodInMinutes: interval });
     }
 });
 
@@ -70,10 +79,15 @@ async function checkMessages() {
                 if (response.ok) {
                     const data = await response.json();
                     if (data.err_no === 0 && data.data && data.data.count) {
-                        const systemMessages = data.data.count["4"] || 0;
+                        const counts = data.data.count;
+                        const totalMessages = (counts["1"] || 0) +
+                            (counts["2"] || 0) +
+                            (counts["3"] || 0) +
+                            (counts["4"] || 0) +
+                            (counts["7"] || 0);
 
-                        if (systemMessages > 0) {
-                            chrome.action.setBadgeText({ text: '' + systemMessages });
+                        if (totalMessages > 0) {
+                            chrome.action.setBadgeText({ text: '' + totalMessages });
                             // Red badge color
                             chrome.action.setBadgeBackgroundColor({ color: '#F53F3F' });
                         } else {
@@ -81,8 +95,11 @@ async function checkMessages() {
                         }
 
                         // Store the count to display in popup
-                        chrome.storage.local.set({ lastMessageCount: systemMessages });
-                        return resolve(systemMessages);
+                        chrome.storage.local.set({
+                            lastMessageCount: totalMessages,
+                            lastMessageCounts: counts
+                        });
+                        return resolve(counts);
                     }
                 }
             } catch (e) {

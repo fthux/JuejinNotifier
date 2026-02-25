@@ -21,14 +21,23 @@ body {
 }
 
 .icon-wrap {
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 
 .logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
   object-fit: cover;
+}
+
+.app-name {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1e80ff;
 }
 
 .message {
@@ -189,3 +198,55 @@ body {
     transform: rotate(360deg);
   }
 }
+.interval-select {
+  border: 1px solid #e5e6eb;
+  border-radius: 4px;
+  padding: 2px 4px;
+  font-size: 12px;
+  color: #4e5969;
+  background-color: #fff;
+  cursor: pointer;
+  outline: none;
+}
+
+.interval-select:focus {
+  border-color: #1e80ff;
+}
+
+
+.global-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #8a919f;
+  padding-bottom: 16px;
+  margin-top: -8px;
+}
+
+.sponsor-link {
+  color: #1e80ff;
+  text-decoration: none;
+}
+
+.sponsor-link:hover {
+  text-decoration: underline;
+}
+
+
+.message-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.msg-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #515767;
+  padding: 4px 12px;
+  border-radius: 4px;
+  background-color: #f7f8fa;
+}
+
