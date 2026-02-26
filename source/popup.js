@@ -12,6 +12,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const msgCountEl = document.getElementById('msg-count');
     const refreshIntervalSelect = document.getElementById('refresh-interval');
     const sponsorLink = document.getElementById('sponsor-link');
+
+    const userCardEl = document.getElementById('user-card');
+    const userAvatarEl = document.getElementById('user-avatar');
+    const userNameEl = document.getElementById('user-name');
+    const userLevelEl = document.getElementById('user-level');
+    const userDescEl = document.getElementById('user-desc');
     const githubLink = document.getElementById('github-link');
     const msg4El = document.getElementById('msg-4');
     const msg1El = document.getElementById('msg-1');
@@ -19,6 +25,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const msg3El = document.getElementById('msg-3');
     const msg7El = document.getElementById('msg-7');
     let ignoredTypes = [];
+    function renderUserInfo(userInfo) {
+        if (!userInfo) {
+            userCardEl.classList.add('hidden');
+            return;
+        }
+        userCardEl.classList.remove('hidden');
+        userAvatarEl.src = userInfo.avatar_large || '';
+        userNameEl.textContent = userInfo.user_name || '';
+        userLevelEl.textContent = userInfo.level != null ? `Lv.${userInfo.level}` : '';
+        userDescEl.textContent = userInfo.description || '';
+        userDescEl.title = userInfo.description || ''; // tooltip for full text on hover
+    }
+
     function updateDisplay(countsObj) {
         if (!countsObj) countsObj = {};
         const c1 = countsObj['1'] || 0;
@@ -124,6 +143,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showState('login');
             }
+            // Load and render user info
+            chrome.storage.local.get(['userInfo'], (res) => {
+                renderUserInfo(res.userInfo || null);
+            });
         });
     });
     themeSelect.addEventListener('change', (e) => {
@@ -162,6 +185,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.storage.local.get(['lastMessageCounts', 'lastMessageCount'], (res) => {
                     updateDisplay(res.lastMessageCounts || { '4': res.lastMessageCount || 0 });
                 });
+            }
+
+            if (changes.userInfo) {
+                renderUserInfo(changes.userInfo.newValue || null);
+            }
+
+            if (changes.uuid && !changes.uuid.newValue) {
+                // on logout, clear user card
+                renderUserInfo(null);
             }
         }
     });

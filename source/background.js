@@ -1,4 +1,3 @@
-let memoryMessageCounts = null;
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.local.get(['refreshInterval'], (result) => {
         const interval = result.refreshInterval || 5;
@@ -19,7 +18,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true;
     } else if (message.type === 'CLEAR_UUID') {
-        memoryMessageCounts = null;
+        chrome.storage.session.remove(['memoryMessageCounts']);
         chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
         chrome.action.setBadgeText({ text: '' });
     } else if (message.type === 'MANUAL_REFRESH') {
@@ -28,7 +27,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true;
     } else if (message.type === 'LOGOUT') {
-        memoryMessageCounts = null;
+        chrome.storage.session.remove(['memoryMessageCounts']);
         chrome.storage.local.get(['uuid'], (result) => {
             if (result.uuid) {
                 chrome.storage.local.set({ loggedOutUuid: result.uuid }, () => {
@@ -100,6 +99,15 @@ async function checkMessages() {
         chrome.storage.local.get(['uuid', 'ignoredTypes'], async (result) => {
             const uuid = fetchedUuid || result.uuid;
             if (!uuid) return resolve(null);
+
+            let memoryMessageCounts = null;
+            try {
+                const sessionResult = await chrome.storage.session.get(['memoryMessageCounts']);
+                memoryMessageCounts = sessionResult.memoryMessageCounts || null;
+            } catch (e) {
+                console.warn("Session storage not fully supported or failed", e);
+            }
+
             const ignoredTypes = result.ignoredTypes || [];
             const allTypes = ['1', '2', '3', '4', '7'];
             const typeNames = {
@@ -155,15 +163,21 @@ async function checkMessages() {
                                 lastMessageCounts: counts
                             });
                         });
-                        memoryMessageCounts = counts;
+                        chrome.storage.session.set({ memoryMessageCounts: counts });
+                        // Fetch user info if not already cached for this uuid
+                        chrome.storage.local.get(['userInfo', 'userInfoUuid'], (userRes) => {
+                            if (!userRes.userInfo || userRes.userInfoUuid !== uuid) {
+                                fetchUserInfo(uuid);
+                            }
+                        });
                         return resolve(counts);
                     } else {
-                        memoryMessageCounts = null;
+                        chrome.storage.session.remove(['memoryMessageCounts']);
                         chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
                         chrome.action.setBadgeText({ text: '' });
                     }
                 } else {
-                    memoryMessageCounts = null;
+                    chrome.storage.session.remove(['memoryMessageCounts']);
                     chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
                     chrome.action.setBadgeText({ text: '' });
                 }
@@ -173,5 +187,22 @@ async function checkMessages() {
             resolve(null);
         });
     });
+}
+async function fetchUserInfo(uuid) {
+    try {
+        const response = await fetch(`https://api.juejin.cn/user_api/v1/user/get?uuid=${uuid}`);
+        if (response.ok) {
+            const data = await response.json();
+            if (data.err_no === 0 && data.data) {
+                const { avatar_large, user_name, level, description } = data.data;
+                chrome.storage.local.set({
+                    userInfo: { avatar_large, user_name, level, description },
+                    userInfoUuid: uuid
+                });
+            }
+        }
+    } catch (e) {
+        console.error('Juejin Notifier: Error fetching user info', e);
+    }
 }
 checkMessages();

@@ -73,15 +73,16 @@ body {
 }
 
 .icon-wrap {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
 }
 
 .logo {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   border-radius: 6px;
   object-fit: cover;
 }
@@ -96,6 +97,8 @@ body {
 .title-wrap {
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .app-desc {
@@ -299,7 +302,8 @@ body {
   font-size: 11px;
   color: var(--text-muted);
   padding-bottom: 16px;
-  margin-top: -8px;
+  margin-top: 8px;
+  line-height: 1.4;
 }
 
 .sponsor-link {
@@ -387,4 +391,68 @@ body {
 .ignored-label {
   font-size: 11px;
   color: var(--ignored-text);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  box-shadow: var(--card-shadow);
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--secondary-bg);
+}
+
+.user-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.user-name-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.user-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-main);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-level {
+  flex-shrink: 0;
+  font-size: 10px;
+  font-weight: 600;
+  background: var(--primary-color);
+  color: #fff;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.user-desc {
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
