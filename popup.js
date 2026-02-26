@@ -96,12 +96,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    const themeSelect = document.getElementById('theme-select');
+    let currentSystemThemeListener = null;
+
+    function applyTheme(themeSetting) {
+        if (themeSetting === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        } else if (themeSetting === 'light') {
+            document.documentElement.setAttribute('data-theme', 'light');
+        } else {
+            // 'system'
+            const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-theme', isDarkMode ? 'dark' : 'light');
+        }
+    }
+
+    // System theme change listener management
+    function updateSystemThemeListener(themeSetting) {
+        const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+
+        if (currentSystemThemeListener) {
+            mediaQuery.removeEventListener('change', currentSystemThemeListener);
+            currentSystemThemeListener = null;
+        }
+
+        if (themeSetting === 'system') {
+            currentSystemThemeListener = (e) => {
+                document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+            };
+            mediaQuery.addEventListener('change', currentSystemThemeListener);
+        }
+    }
+
     // Sync with tabs on open, wait for verified response, then render
     showState('loading'); // Show loading explicitly first 
 
     chrome.runtime.sendMessage({ type: 'SYNC_NOW' }, (response) => {
-        chrome.storage.local.get(['refreshInterval', 'ignoredTypes'], (result) => {
+        chrome.storage.local.get(['refreshInterval', 'ignoredTypes', 'theme'], (result) => {
             ignoredTypes = result.ignoredTypes || [];
+
+            // Theme init
+            const themePref = result.theme || 'system';
+            themeSelect.value = themePref;
+            applyTheme(themePref);
+            updateSystemThemeListener(themePref);
 
             if (result.refreshInterval) {
                 refreshIntervalSelect.value = result.refreshInterval.toString();
@@ -115,6 +153,15 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 showState('login');
             }
+        });
+    });
+
+    // Handle theme change
+    themeSelect.addEventListener('change', (e) => {
+        const newTheme = e.target.value;
+        chrome.storage.local.set({ theme: newTheme }, () => {
+            applyTheme(newTheme);
+            updateSystemThemeListener(newTheme);
         });
     });
 

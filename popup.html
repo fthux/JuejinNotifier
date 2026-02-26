@@ -73,15 +73,25 @@
       <button id="refresh-btn" class="secondary-btn">刷新</button>
     </div>
     <div class="footer-wrap">
-      <div class="footer-note">
-        <label for="refresh-interval">自动刷新间隔：</label>
-        <select id="refresh-interval" class="interval-select">
-          <option value="1">1 分钟</option>
-          <option value="3">3 分钟</option>
-          <option value="5">5 分钟</option>
-          <option value="30">半小时</option>
-          <option value="60">一小时</option>
-        </select>
+      <div class="footer-settings">
+        <div class="footer-note">
+          <label for="theme-select">外观主题：</label>
+          <select id="theme-select" class="interval-select">
+            <option value="system">跟随系统</option>
+            <option value="light">浅色主题</option>
+            <option value="dark">深色主题</option>
+          </select>
+        </div>
+        <div class="footer-note">
+          <label for="refresh-interval">刷新间隔：</label>
+          <select id="refresh-interval" class="interval-select">
+            <option value="1">1 分钟</option>
+            <option value="3">3 分钟</option>
+            <option value="5">5 分钟</option>
+            <option value="30">半小时</option>
+            <option value="60">一小时</option>
+          </select>
+        </div>
       </div>
       <button id="logout-btn" class="text-btn">退出账号</button>
     </div>
