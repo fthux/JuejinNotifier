@@ -1,26 +1,20 @@
 (function () {
-    function checkLoginState() {
-        try {
-            const dataStr = window.localStorage.getItem('__tea_cache_tokens_2608');
-            if (dataStr) {
-                const data = JSON.parse(dataStr);
-                if (data && data.user_unique_id) {
-                    const uuid = data.user_unique_id;
-                    chrome.runtime.sendMessage({ type: "SYNC_UUID", uuid: uuid });
-                } else {
-                    chrome.runtime.sendMessage({ type: "CLEAR_UUID" });
+    chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (message.type === 'REQUEST_UUID') {
+            try {
+                const dataStr = window.localStorage.getItem('__tea_cache_tokens_2608');
+                if (dataStr) {
+                    const data = JSON.parse(dataStr);
+                    if (data && data.user_unique_id) {
+                        sendResponse({ uuid: data.user_unique_id });
+                        return true;
+                    }
                 }
-            } else {
-                chrome.runtime.sendMessage({ type: "CLEAR_UUID" });
+            } catch (e) {
+                console.error("Juejin Notifier: Error reading localStorage", e);
             }
-        } catch (e) {
-            console.error("Juejin Notifier: Error reading localStorage", e);
+            sendResponse({ uuid: null });
         }
-    }
-
-    // Check immediately
-    checkLoginState();
-
-    // Poll locally every 1.5 seconds to detect login without page reload
-    setInterval(checkLoginState, 1500);
+        return true;
+    });
 })();

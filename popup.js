@@ -91,26 +91,31 @@ document.addEventListener('DOMContentLoaded', () => {
             loginState.classList.remove('hidden');
         } else if (state === 'status') {
             statusState.classList.remove('hidden');
+        } else if (state === 'loading') {
+            loadingState.classList.remove('hidden');
         }
     }
 
-    // Retrieve current status
-    chrome.storage.local.get(['uuid', 'lastMessageCount', 'lastMessageCounts', 'refreshInterval', 'ignoredTypes'], (result) => {
-        ignoredTypes = result.ignoredTypes || [];
+    // Sync with tabs on open, wait for verified response, then render
+    showState('loading'); // Show loading explicitly first 
 
-        if (result.refreshInterval) {
-            refreshIntervalSelect.value = result.refreshInterval.toString();
-        } else {
-            refreshIntervalSelect.value = '5'; // default
-        }
+    chrome.runtime.sendMessage({ type: 'SYNC_NOW' }, (response) => {
+        chrome.storage.local.get(['refreshInterval', 'ignoredTypes'], (result) => {
+            ignoredTypes = result.ignoredTypes || [];
 
-        if (result.uuid) {
-            showState('status');
-            const counts = result.lastMessageCounts || { '4': result.lastMessageCount || 0 };
-            updateDisplay(counts);
-        } else {
-            showState('login');
-        }
+            if (result.refreshInterval) {
+                refreshIntervalSelect.value = result.refreshInterval.toString();
+            } else {
+                refreshIntervalSelect.value = '5'; // default
+            }
+
+            if (response && response.verified) {
+                showState('status');
+                updateDisplay(response.counts);
+            } else {
+                showState('login');
+            }
+        });
     });
 
     // Handle interval change
@@ -190,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     refreshBtn.addEventListener('click', () => {
-        refreshBtn.textContent = '...';
+        refreshBtn.textContent = '刷新中...';
         refreshBtn.disabled = true;
         chrome.runtime.sendMessage({ type: 'MANUAL_REFRESH' }, (response) => {
             refreshBtn.textContent = '刷新';

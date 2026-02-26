@@ -5,7 +5,8 @@
   "description": "Notify when there are new system messages on Juejin.",
   "permissions": [
     "storage",
-    "alarms"
+    "alarms",
+    "tabs"
   ],
   "host_permissions": [
     "*://juejin.cn/*",
