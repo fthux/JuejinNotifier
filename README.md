@@ -3,7 +3,7 @@
 方便及时的获取掘金（[juejin.cn](juejin.cn)）消息通知。
 
 <p align='center'>
-  <img src='./icon640' height="200">
+  <img src='./source/icon640.png' height="200">
 </p>
 
 ## 📖 简介
