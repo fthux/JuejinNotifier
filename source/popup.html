@@ -23,12 +23,19 @@
     <button id="login-btn" class="primary-btn">前往登录</button>
   </div>
   <div class="container hidden" id="status-state">
-    <div class="icon-wrap">
-      <img src="icon180.png" alt="Juejin" class="logo">
-      <div class="title-wrap">
-        <div class="app-name">Juejin Notifier</div>
-        <div class="app-desc">掘金消息通知小助手</div>
+    <div class="topbar">
+      <div class="icon-wrap">
+        <img src="icon180.png" alt="Juejin" class="logo">
+        <div class="title-wrap">
+          <div class="app-name">Juejin Notifier</div>
+          <div class="app-desc">掘金消息通知小助手</div>
+        </div>
       </div>
+      <button id="settings-btn" class="icon-btn" title="设置">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+        </svg>
+      </button>
     </div>
     <div class="user-card" id="user-card">
       <img id="user-avatar" class="user-avatar" src="" alt="avatar">
@@ -86,30 +93,62 @@
       <button id="view-msg-btn" class="primary-btn">查看消息</button>
       <button id="refresh-btn" class="secondary-btn">刷新</button>
     </div>
-    <div class="footer-wrap">
-      <div class="footer-settings">
-        <div class="footer-note">
-          <label for="theme-select">外观主题：</label>
-          <select id="theme-select" class="interval-select">
-            <option value="system">跟随系统</option>
-            <option value="light">浅色主题</option>
-            <option value="dark">深色主题</option>
-          </select>
+  </div>
+
+  <!-- Settings Panel Overlay -->
+  <div id="settings-panel" class="settings-panel hidden">
+    <div class="settings-header">
+      <button id="settings-back-btn" class="icon-btn" title="返回">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <span class="settings-title">设置</span>
+    </div>
+    <div class="settings-body">
+      <div class="settings-section">
+        <div class="settings-label">外观主题</div>
+        <select id="theme-select" class="settings-select">
+          <option value="system">跟随系统</option>
+          <option value="light">浅色主题</option>
+          <option value="dark">深色主题</option>
+        </select>
+      </div>
+      <div class="settings-section">
+        <div class="settings-label">刷新间隔</div>
+        <select id="refresh-interval" class="settings-select">
+          <option value="1">1 分钟</option>
+          <option value="3">3 分钟</option>
+          <option value="5">5 分钟</option>
+          <option value="30">半小时</option>
+          <option value="60">一小时</option>
+        </select>
+      </div>
+      <div class="settings-divider"></div>
+      <div class="settings-about">
+        <div class="settings-about-item">
+          <span>🔧 代码已开源</span>
+          <a href="#" id="settings-github-link" class="settings-about-tag">GitHub</a>
         </div>
-        <div class="footer-note">
-          <label for="refresh-interval">刷新间隔：</label>
-          <select id="refresh-interval" class="interval-select">
-            <option value="1">1 分钟</option>
-            <option value="3">3 分钟</option>
-            <option value="5">5 分钟</option>
-            <option value="30">半小时</option>
-            <option value="60">一小时</option>
-          </select>
+        <div class="settings-about-item">
+          <span>☕ 感谢 <a href="#" id="settings-sponsor-link" class="settings-about-link">fthux.com</a> 的赞助支持</span>
         </div>
       </div>
-      <button id="logout-btn" class="text-btn">退出账号</button>
+      <div class="settings-divider"></div>
+      <button id="rate-btn" class="settings-about-item settings-about-btn">
+        <span>⭐ 给个好评吧！</span>
+        <svg class="settings-about-tag" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <button id="feedback-btn" class="settings-about-item settings-about-btn">
+        <span>💡 想法与反馈</span>
+        <svg class="settings-about-tag" xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="settings-divider"></div>
+      <button id="logout-btn" class="settings-logout-btn">退出账号</button>
+      <div class="settings-version" id="settings-version"></div>
     </div>
   </div>
+
   <div id="confirm-modal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-title" style="font-weight: 600; margin-bottom: 12px;">提示</div>
@@ -122,7 +161,7 @@
   </div>
   <div class="global-footer">
     <div>本扩展已开源 · <a href="#" id="github-link" class="sponsor-link">查看 GitHub 源码</a></div>
-    <div>☕ 感谢 <a href="#" id="sponsor-link" class="sponsor-link">fthux.com</a> 的赞助支持</div>
+    <div>☕ 感谢 <a href="#" id="footer-sponsor-link" class="sponsor-link">fthux.com</a> 的赞助支持</div>
   </div>
   <script src="popup.js"></script>
 </body>

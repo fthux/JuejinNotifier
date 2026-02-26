@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
-  "name": "Juejin Notifier",
-  "version": "1.0",
+  "name": "Juejin Notifier - 掘金通知小助手",
+  "version": "1.0.0",
   "description": "掘金消息通知小助手",
   "permissions": [
     "storage",

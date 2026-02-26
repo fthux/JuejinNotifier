@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalConfirmBtn = document.getElementById('modal-confirm-btn');
     const msgCountEl = document.getElementById('msg-count');
     const refreshIntervalSelect = document.getElementById('refresh-interval');
-    const sponsorLink = document.getElementById('sponsor-link');
+    const sponsorLink = document.getElementById('footer-sponsor-link');
 
     const userCardEl = document.getElementById('user-card');
     const userAvatarEl = document.getElementById('user-avatar');
@@ -19,6 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const userLevelEl = document.getElementById('user-level');
     const userDescEl = document.getElementById('user-desc');
     const githubLink = document.getElementById('github-link');
+    const settingsBtn = document.getElementById('settings-btn');
+    const settingsPanel = document.getElementById('settings-panel');
+    const settingsBackBtn = document.getElementById('settings-back-btn');
+    const rateBtn = document.getElementById('rate-btn');
+    const feedbackBtn = document.getElementById('feedback-btn');
+    const settingsVersionEl = document.getElementById('settings-version');
+    if (settingsVersionEl) {
+        const version = chrome.runtime.getManifest().version;
+        settingsVersionEl.textContent = `v${version}`;
+    }
     const msg4El = document.getElementById('msg-4');
     const msg1El = document.getElementById('msg-1');
     const msg2El = document.getElementById('msg-2');
@@ -124,6 +134,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mediaQuery.addEventListener('change', currentSystemThemeListener);
         }
     }
+    // Apply theme immediately to avoid flash of wrong theme during loading
+    chrome.storage.local.get(['theme'], (res) => {
+        applyTheme(res.theme || 'system');
+    });
     showState('loading');
     chrome.runtime.sendMessage({ type: 'SYNC_NOW' }, (response) => {
         chrome.storage.local.get(['refreshInterval', 'ignoredTypes', 'theme'], (result) => {
@@ -222,6 +236,9 @@ document.addEventListener('DOMContentLoaded', () => {
         modalConfirmBtn.disabled = true;
         chrome.runtime.sendMessage({ type: 'LOGOUT' }, (response) => {
             confirmModal.classList.add('hidden');
+            if (settingsPanel) {
+                settingsPanel.classList.add('hidden');
+            }
             modalConfirmBtn.textContent = '确定退出';
             modalConfirmBtn.disabled = false;
             showState('login');
@@ -248,6 +265,41 @@ document.addEventListener('DOMContentLoaded', () => {
         githubLink.addEventListener('click', (e) => {
             e.preventDefault();
             chrome.tabs.create({ url: 'https://github.com/fthux/JuejinNotifier' });
+        });
+    }
+    if (settingsBtn) {
+        settingsBtn.addEventListener('click', () => {
+            settingsPanel.classList.remove('hidden');
+        });
+    }
+    if (settingsBackBtn) {
+        settingsBackBtn.addEventListener('click', () => {
+            settingsPanel.classList.add('hidden');
+        });
+    }
+    if (rateBtn) {
+        rateBtn.addEventListener('click', () => {
+            // Open Chrome Web Store rating page (replace EXT_ID with actual extension id)
+            chrome.tabs.create({ url: 'https://chromewebstore.google.com/detail/juejin-notifier/nnlnnlnmombhnpcpobgpibaafcehejnp/reviews' });
+        });
+    }
+    if (feedbackBtn) {
+        feedbackBtn.addEventListener('click', () => {
+            chrome.tabs.create({ url: 'https://github.com/fthux/JuejinNotifier/issues' });
+        });
+    }
+    const settingsGithubLink = document.getElementById('settings-github-link');
+    if (settingsGithubLink) {
+        settingsGithubLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.tabs.create({ url: 'https://github.com/fthux/JuejinNotifier' });
+        });
+    }
+    const settingsSponsorLink = document.getElementById('settings-sponsor-link');
+    if (settingsSponsorLink) {
+        settingsSponsorLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.tabs.create({ url: 'https://fthux.com' });
         });
     }
 });
