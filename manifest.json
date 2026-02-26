@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Juejin Notifier",
   "version": "1.0",
-  "description": "Notify when there are new system messages on Juejin.",
+  "description": "掘金消息通知小助手",
   "permissions": [
     "storage",
     "alarms",
