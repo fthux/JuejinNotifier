@@ -512,6 +512,11 @@ body {
   gap: 10px;
   flex: 1;
   overflow-y: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+.settings-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari and Opera */
 }
 
 .settings-section {

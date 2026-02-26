@@ -40,10 +40,10 @@
 ## 🖼️ 截图预览
 
 <div>
-<img src='./screenshots/light-theme.png' style='width:250px;'>
-<img src='./screenshots/dark-theme.png' style='width:250px;'>
-<img src='./screenshots/login.png' style='width:250px;'>
-<img src='./screenshots/logout.png' style='width:250px;'>
+<img src='./screenshots/1.png' style='width:250px;'>
+<img src='./screenshots/2.png' style='width:250px;'>
+<img src='./screenshots/3.png' style='width:250px;'>
+<img src='./screenshots/4.png' style='width:250px;'>
 </div>
 
 ## 📦 安装方法
