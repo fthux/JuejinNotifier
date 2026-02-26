@@ -1,17 +1,14 @@
 <!DOCTYPE html>
 <html>
-
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="popup.css">
 </head>
-
 <body>
   <div class="container" id="loading-state">
     <div class="spinner"></div>
     <div class="message">加载中...</div>
   </div>
-
   <div class="container hidden" id="login-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
@@ -20,7 +17,6 @@
     <div class="message">您尚未登录掘金，或本地无登录信息。</div>
     <button id="login-btn" class="primary-btn">前往登录</button>
   </div>
-
   <div class="container hidden" id="status-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
@@ -30,40 +26,40 @@
       <div class="msg-item" data-type="1">
         <span>赞和收藏</span>
         <div class="msg-actions">
-          <span id="msg-1" class="highlight">0</span>
           <span class="ignored-label hidden">（已忽略）</span>
+          <span id="msg-1" class="highlight">0</span>
           <button class="toggle-ignore-btn">忽略</button>
         </div>
       </div>
       <div class="msg-item" data-type="3">
         <span>评论</span>
         <div class="msg-actions">
-          <span id="msg-3" class="highlight">0</span>
           <span class="ignored-label hidden">（已忽略）</span>
+          <span id="msg-3" class="highlight">0</span>
           <button class="toggle-ignore-btn">忽略</button>
         </div>
       </div>
       <div class="msg-item" data-type="2">
         <span>新增粉丝</span>
         <div class="msg-actions">
-          <span id="msg-2" class="highlight">0</span>
           <span class="ignored-label hidden">（已忽略）</span>
+          <span id="msg-2" class="highlight">0</span>
           <button class="toggle-ignore-btn">忽略</button>
         </div>
       </div>
       <div class="msg-item" data-type="7">
         <span>私信</span>
         <div class="msg-actions">
-          <span id="msg-7" class="highlight">0</span>
           <span class="ignored-label hidden">（已忽略）</span>
+          <span id="msg-7" class="highlight">0</span>
           <button class="toggle-ignore-btn">忽略</button>
         </div>
       </div>
       <div class="msg-item" data-type="4">
         <span>系统通知</span>
         <div class="msg-actions">
-          <span id="msg-4" class="highlight">0</span>
           <span class="ignored-label hidden">（已忽略）</span>
+          <span id="msg-4" class="highlight">0</span>
           <button class="toggle-ignore-btn">忽略</button>
         </div>
       </div>
@@ -96,7 +92,6 @@
       <button id="logout-btn" class="text-btn">退出账号</button>
     </div>
   </div>
-
   <div id="confirm-modal" class="modal hidden">
     <div class="modal-content">
       <div class="modal-title" style="font-weight: 600; margin-bottom: 12px;">提示</div>
@@ -107,12 +102,9 @@
       </div>
     </div>
   </div>
-
   <div class="global-footer">
     由 <a href="#" id="sponsor-link" class="sponsor-link">fthux.com</a> 友情赞助
   </div>
-
   <script src="popup.js"></script>
 </body>
-
 </html>
