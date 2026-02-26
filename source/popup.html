@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
   <div class="container" id="loading-state">
     <div class="spinner"></div>
@@ -12,7 +14,10 @@
   <div class="container hidden" id="login-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
-      <div class="app-name">Juejin Notifier</div>
+      <div class="title-wrap">
+        <div class="app-name">Juejin Notifier</div>
+        <div class="app-desc">掘金消息通知小助手</div>
+      </div>
     </div>
     <div class="message">您尚未登录掘金，或本地无登录信息。</div>
     <button id="login-btn" class="primary-btn">前往登录</button>
@@ -20,7 +25,10 @@
   <div class="container hidden" id="status-state">
     <div class="icon-wrap">
       <img src="icon180.png" alt="Juejin" class="logo">
-      <div class="app-name">Juejin Notifier</div>
+      <div class="title-wrap">
+        <div class="app-name">Juejin Notifier</div>
+        <div class="app-desc">掘金消息通知小助手</div>
+      </div>
     </div>
     <div class="message-list">
       <div class="msg-item" data-type="1">
@@ -103,8 +111,10 @@
     </div>
   </div>
   <div class="global-footer">
-    由 <a href="#" id="sponsor-link" class="sponsor-link">fthux.com</a> 友情赞助
+    由 <a href="#" id="sponsor-link" class="sponsor-link">fthux.com</a> 友情赞助 | <a href="#" id="github-link"
+      class="sponsor-link">开源主页</a>
   </div>
   <script src="popup.js"></script>
 </body>
+
 </html>

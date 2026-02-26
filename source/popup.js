@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const msgCountEl = document.getElementById('msg-count');
     const refreshIntervalSelect = document.getElementById('refresh-interval');
     const sponsorLink = document.getElementById('sponsor-link');
+    const githubLink = document.getElementById('github-link');
     const msg4El = document.getElementById('msg-4');
     const msg1El = document.getElementById('msg-1');
     const msg2El = document.getElementById('msg-2');
@@ -209,6 +210,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sponsorLink.addEventListener('click', (e) => {
             e.preventDefault();
             chrome.tabs.create({ url: 'https://fthux.com' });
+        });
+    }
+    if (githubLink) {
+        githubLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.tabs.create({ url: 'https://github.com/fthux/JuejinNotifier' });
         });
     }
 });
