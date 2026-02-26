@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const msg3El = document.getElementById('msg-3');
     const msg7El = document.getElementById('msg-7');
 
+    let ignoredTypes = [];
+
     function updateDisplay(countsObj) {
         if (!countsObj) countsObj = {};
 
@@ -29,18 +31,56 @@ document.addEventListener('DOMContentLoaded', () => {
         const c4 = countsObj['4'] || 0;
         const c7 = countsObj['7'] || 0;
 
-        msg1El.textContent = c1;
-        msg2El.textContent = c2;
-        msg3El.textContent = c3;
-        msg4El.textContent = c4;
-        msg7El.textContent = c7;
+        msg1El.textContent = ignoredTypes.includes('1') ? '-' : c1;
+        msg2El.textContent = ignoredTypes.includes('2') ? '-' : c2;
+        msg3El.textContent = ignoredTypes.includes('3') ? '-' : c3;
+        msg4El.textContent = ignoredTypes.includes('4') ? '-' : c4;
+        msg7El.textContent = ignoredTypes.includes('7') ? '-' : c7;
 
-        msg1El.style.color = c1 > 0 ? '#F53F3F' : '#1e80ff';
-        msg2El.style.color = c2 > 0 ? '#F53F3F' : '#1e80ff';
-        msg3El.style.color = c3 > 0 ? '#F53F3F' : '#1e80ff';
-        msg4El.style.color = c4 > 0 ? '#F53F3F' : '#1e80ff';
-        msg7El.style.color = c7 > 0 ? '#F53F3F' : '#1e80ff';
+        msg1El.style.color = (c1 > 0 && !ignoredTypes.includes('1')) ? '#F53F3F' : '';
+        msg2El.style.color = (c2 > 0 && !ignoredTypes.includes('2')) ? '#F53F3F' : '';
+        msg3El.style.color = (c3 > 0 && !ignoredTypes.includes('3')) ? '#F53F3F' : '';
+        msg4El.style.color = (c4 > 0 && !ignoredTypes.includes('4')) ? '#F53F3F' : '';
+        msg7El.style.color = (c7 > 0 && !ignoredTypes.includes('7')) ? '#F53F3F' : '';
+
+        // Update UI states for ignore buttons and container classes
+        document.querySelectorAll('.msg-item').forEach(item => {
+            const type = item.getAttribute('data-type');
+            const btn = item.querySelector('.toggle-ignore-btn');
+            const label = item.querySelector('.ignored-label');
+            const countSpan = item.querySelector('.highlight');
+
+            if (ignoredTypes.includes(type)) {
+                item.classList.add('ignored');
+                btn.textContent = '开启';
+                label.classList.remove('hidden');
+                countSpan.classList.add('hidden');
+            } else {
+                item.classList.remove('ignored');
+                btn.textContent = '忽略';
+                label.classList.add('hidden');
+                countSpan.classList.remove('hidden');
+            }
+        });
     }
+
+    // Toggle ignore handler
+    document.querySelectorAll('.toggle-ignore-btn').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+            const item = e.target.closest('.msg-item');
+            const type = item.getAttribute('data-type');
+
+            if (ignoredTypes.includes(type)) {
+                ignoredTypes = ignoredTypes.filter(t => t !== type);
+            } else {
+                ignoredTypes.push(type);
+            }
+
+            chrome.storage.local.set({ ignoredTypes: ignoredTypes }, () => {
+                refreshBtn.click();
+            });
+        });
+    });
 
     function showState(state) {
         loadingState.classList.add('hidden');
@@ -55,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Retrieve current status
-    chrome.storage.local.get(['uuid', 'lastMessageCount', 'lastMessageCounts', 'refreshInterval'], (result) => {
+    chrome.storage.local.get(['uuid', 'lastMessageCount', 'lastMessageCounts', 'refreshInterval', 'ignoredTypes'], (result) => {
+        ignoredTypes = result.ignoredTypes || [];
+
         if (result.refreshInterval) {
             refreshIntervalSelect.value = result.refreshInterval.toString();
         } else {
@@ -76,26 +118,37 @@ document.addEventListener('DOMContentLoaded', () => {
         const newInterval = parseInt(e.target.value, 10);
         chrome.storage.local.set({ refreshInterval: newInterval }, () => {
             chrome.runtime.sendMessage({ type: 'UPDATE_ALARM', interval: newInterval });
+            refreshBtn.click();
         });
     });
 
     // Listen for changes so popup updates instantly when user logs in/out
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (namespace === 'local') {
+            let requiresUpdateDisplay = false;
+
+            if (changes.ignoredTypes) {
+                ignoredTypes = changes.ignoredTypes.newValue || [];
+                requiresUpdateDisplay = true;
+            }
+
             if (changes.uuid) {
                 if (changes.uuid.newValue) {
                     showState('status');
-                    chrome.storage.local.get(['lastMessageCounts', 'lastMessageCount'], (res) => {
-                        updateDisplay(res.lastMessageCounts || { '4': res.lastMessageCount || 0 });
-                    });
+                    requiresUpdateDisplay = true;
                 } else {
                     showState('login');
                 }
             }
-            if (changes.lastMessageCounts) {
-                updateDisplay(changes.lastMessageCounts.newValue || {});
-            } else if (changes.lastMessageCount) {
-                updateDisplay({ '4': changes.lastMessageCount.newValue || 0 });
+
+            if (changes.lastMessageCounts || changes.lastMessageCount) {
+                requiresUpdateDisplay = true;
+            }
+
+            if (requiresUpdateDisplay) {
+                chrome.storage.local.get(['lastMessageCounts', 'lastMessageCount'], (res) => {
+                    updateDisplay(res.lastMessageCounts || { '4': res.lastMessageCount || 0 });
+                });
             }
         }
     });

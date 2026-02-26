@@ -70,9 +70,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 async function checkMessages() {
     return new Promise((resolve) => {
-        chrome.storage.local.get(['uuid'], async (result) => {
+        chrome.storage.local.get(['uuid', 'ignoredTypes'], async (result) => {
             const uuid = result.uuid;
             if (!uuid) return resolve(null);
+
+            const ignoredTypes = result.ignoredTypes || [];
+            const allTypes = ['1', '2', '3', '4', '7'];
+
+            // Check if all message types are ignored
+            const allIgnored = allTypes.every(t => ignoredTypes.includes(t));
+            if (allIgnored) {
+                chrome.action.setBadgeText({ text: '' });
+                return resolve(null);
+            }
 
             try {
                 const response = await fetch(`https://api.juejin.cn/interact_api/v1/message/count?uuid=${uuid}`);
@@ -80,11 +90,14 @@ async function checkMessages() {
                     const data = await response.json();
                     if (data.err_no === 0 && data.data && data.data.count) {
                         const counts = data.data.count;
-                        const totalMessages = (counts["1"] || 0) +
-                            (counts["2"] || 0) +
-                            (counts["3"] || 0) +
-                            (counts["4"] || 0) +
-                            (counts["7"] || 0);
+
+                        // Calculate total messages excluding ignored types
+                        let totalMessages = 0;
+                        allTypes.forEach(type => {
+                            if (!ignoredTypes.includes(type)) {
+                                totalMessages += (counts[type] || 0);
+                            }
+                        });
 
                         if (totalMessages > 0) {
                             chrome.action.setBadgeText({ text: '' + totalMessages });

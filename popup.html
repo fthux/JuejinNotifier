@@ -27,11 +27,46 @@
       <div class="app-name">Juejin Notifier</div>
     </div>
     <div class="message-list">
-      <div class="msg-item">赞和收藏：<span id="msg-1" class="highlight">0</span></div>
-      <div class="msg-item">评论：<span id="msg-3" class="highlight">0</span></div>
-      <div class="msg-item">新增粉丝：<span id="msg-2" class="highlight">0</span></div>
-      <div class="msg-item">私信：<span id="msg-7" class="highlight">0</span></div>
-      <div class="msg-item">系统通知：<span id="msg-4" class="highlight">0</span></div>
+      <div class="msg-item" data-type="1">
+        <span>赞和收藏</span>
+        <div class="msg-actions">
+          <span id="msg-1" class="highlight">0</span>
+          <span class="ignored-label hidden">（已忽略）</span>
+          <button class="toggle-ignore-btn">忽略</button>
+        </div>
+      </div>
+      <div class="msg-item" data-type="3">
+        <span>评论</span>
+        <div class="msg-actions">
+          <span id="msg-3" class="highlight">0</span>
+          <span class="ignored-label hidden">（已忽略）</span>
+          <button class="toggle-ignore-btn">忽略</button>
+        </div>
+      </div>
+      <div class="msg-item" data-type="2">
+        <span>新增粉丝</span>
+        <div class="msg-actions">
+          <span id="msg-2" class="highlight">0</span>
+          <span class="ignored-label hidden">（已忽略）</span>
+          <button class="toggle-ignore-btn">忽略</button>
+        </div>
+      </div>
+      <div class="msg-item" data-type="7">
+        <span>私信</span>
+        <div class="msg-actions">
+          <span id="msg-7" class="highlight">0</span>
+          <span class="ignored-label hidden">（已忽略）</span>
+          <button class="toggle-ignore-btn">忽略</button>
+        </div>
+      </div>
+      <div class="msg-item" data-type="4">
+        <span>系统通知</span>
+        <div class="msg-actions">
+          <span id="msg-4" class="highlight">0</span>
+          <span class="ignored-label hidden">（已忽略）</span>
+          <button class="toggle-ignore-btn">忽略</button>
+        </div>
+      </div>
     </div>
     <div class="action-wrap">
       <button id="view-msg-btn" class="primary-btn">查看消息</button>

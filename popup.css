@@ -52,6 +52,8 @@ body {
   color: #1e80ff;
   font-weight: 600;
   font-size: 16px;
+  margin-right: 8px;
+  /* Added spacing between number and toggle button */
 }
 
 .primary-btn {
@@ -198,6 +200,7 @@ body {
     transform: rotate(360deg);
   }
 }
+
 .interval-select {
   border: 1px solid #e5e6eb;
   border-radius: 4px;
@@ -216,19 +219,20 @@ body {
 
 .global-footer {
   text-align: center;
-  font-size: 12px;
-  color: #8a919f;
+  font-size: 11px;
+  color: #c9cdd4;
   padding-bottom: 16px;
   margin-top: -8px;
 }
 
 .sponsor-link {
-  color: #1e80ff;
+  color: #a9aeb8;
   text-decoration: none;
 }
 
 .sponsor-link:hover {
   text-decoration: underline;
+  color: #8a919f;
 }
 
 
@@ -243,6 +247,7 @@ body {
 .msg-item {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 14px;
   color: #515767;
   padding: 4px 12px;
@@ -250,3 +255,53 @@ body {
   background-color: #f7f8fa;
 }
 
+.msg-item.ignored {
+  color: #c9cdd4;
+  background-color: #fafafa;
+}
+
+.msg-item .highlight {
+  display: inline-block;
+  min-width: 16px;
+  text-align: right;
+}
+
+.msg-item.ignored .highlight {
+  color: #c9cdd4 !important;
+  font-weight: normal;
+}
+
+.toggle-ignore-btn {
+  background: none;
+  border: none;
+  color: #8a919f;
+  font-size: 12px;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.toggle-ignore-btn:hover {
+  background-color: #e5e6eb;
+  color: #4e5969;
+}
+
+.msg-item.ignored .toggle-ignore-btn {
+  color: #1e80ff;
+}
+
+.msg-item.ignored .toggle-ignore-btn:hover {
+  background-color: #e8f3ff;
+}
+
+.msg-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ignored-label {
+  font-size: 12px;
+  color: #c9cdd4;
+}
