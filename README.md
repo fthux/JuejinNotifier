@@ -1,6 +1,6 @@
 # Juejin Notifier
 
-方便及时的获取掘金（juejin.cn）消息通知。
+方便及时的获取掘金（[juejin.cn](juejin.cn)）消息通知。
 
 <p align='center'>
   <img src='./icon640' height="200">
