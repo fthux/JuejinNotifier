@@ -1,3 +1,5 @@
+let memoryMessageCounts = null;
+
 chrome.runtime.onInstalled.addListener(() => {
     chrome.storage.local.get(['refreshInterval'], (result) => {
         const interval = result.refreshInterval || 5;
@@ -24,6 +26,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true;
     } else if (message.type === 'CLEAR_UUID') {
+        memoryMessageCounts = null;
         chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
         chrome.action.setBadgeText({ text: '' });
     } else if (message.type === 'MANUAL_REFRESH') {
@@ -32,6 +35,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
         return true; // Keep message channel open for async response
     } else if (message.type === 'LOGOUT') {
+        memoryMessageCounts = null;
         chrome.storage.local.get(['uuid'], (result) => {
             if (result.uuid) {
                 chrome.storage.local.set({ loggedOutUuid: result.uuid }, () => {
@@ -117,6 +121,13 @@ async function checkMessages() {
 
             const ignoredTypes = result.ignoredTypes || [];
             const allTypes = ['1', '2', '3', '4', '7'];
+            const typeNames = {
+                '1': '赞和收藏',
+                '2': '新增粉丝',
+                '3': '评论',
+                '4': '系统通知',
+                '7': '私信'
+            };
 
             // Check if all message types are ignored
             const allIgnored = allTypes.every(t => ignoredTypes.includes(t));
@@ -134,11 +145,33 @@ async function checkMessages() {
 
                         // Calculate total messages excluding ignored types
                         let totalMessages = 0;
+                        let newMsgTypes = [];
+
+                        // Check if there are newly received messages by comparing to old count
+                        const oldCounts = memoryMessageCounts || {};
+
                         allTypes.forEach(type => {
                             if (!ignoredTypes.includes(type)) {
-                                totalMessages += (counts[type] || 0);
+                                const currentCount = counts[type] || 0;
+                                totalMessages += currentCount;
+
+                                const oldCount = oldCounts[type] || 0;
+                                if (currentCount > oldCount) {
+                                    newMsgTypes.push(typeNames[type]);
+                                }
                             }
                         });
+
+                        // Show system notification if there are new messages
+                        if (newMsgTypes.length > 0) {
+                            chrome.notifications.create({
+                                type: 'basic',
+                                iconUrl: 'icon128.png',
+                                title: '掘金消息通知小助手',
+                                message: `您有新的 ${newMsgTypes.join('、')}，请及时查看！`,
+                                priority: 1
+                            });
+                        }
 
                         if (totalMessages > 0) {
                             chrome.action.setBadgeText({ text: '' + totalMessages });
@@ -156,14 +189,17 @@ async function checkMessages() {
                                 lastMessageCounts: counts
                             });
                         });
+                        memoryMessageCounts = counts;
                         return resolve(counts);
                     } else {
                         // API indicates the UUID is invalid or expired
+                        memoryMessageCounts = null;
                         chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
                         chrome.action.setBadgeText({ text: '' });
                     }
                 } else {
                     // HTTP error (e.g., 401, 403), likely invalid credentials
+                    memoryMessageCounts = null;
                     chrome.storage.local.remove(['uuid', 'lastMessageCount', 'lastMessageCounts']);
                     chrome.action.setBadgeText({ text: '' });
                 }

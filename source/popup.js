@@ -219,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     viewMsgBtn.addEventListener('click', () => {
-        chrome.tabs.create({ url: 'https://juejin.cn/notification/system' });
+        chrome.tabs.create({ url: 'https://juejin.cn/notification' });
     });
 
     logoutBtn.addEventListener('click', () => {
