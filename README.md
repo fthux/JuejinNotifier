@@ -50,7 +50,7 @@
 
 ### 方式一：Chrome 网上应用店安装（推荐）
 
-访问 `Chrome` 网上应用店中的 `Juejin Notifier` 页面。
+访问 `Chrome` 网上应用店中的 [`Juejin Notifier`](https://chromewebstore.google.com/detail/Juejin%20Notifier%20-%20%E6%8E%98%E9%87%91%E9%80%9A%E7%9F%A5%E5%B0%8F%E5%8A%A9%E6%89%8B/nnlnnlnmombhnpcpobgpibaafcehejnp) 页面。
 
 点击“添加到 `Chrome`”即可完成安装。
 
